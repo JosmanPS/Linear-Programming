@@ -14,34 +14,34 @@ function verts = LP_verts(A, b)
 [l1, l2] = size(A);
 
 % We need b to be a vector of (n * 1) not (1 * n).
-if( size(b,2) > 1)
-    b = b'
+if( size(b,2) > size(b,1))
+    b = b';
 end
 
 % Define the matrix verts.
 verts = [];
 
-% Get the different square sub-matrix of A.
-for i = 1:(l2-2)
-    for j = (i+1):(l2-1)
-        for k = (j+1):l2
-           
-            % Square sub-matrix of A.
-            matrix = A(:, [i,j,k]);
-           
-            x = zeros(5,1);
+% Different combinations for square matrix.
+l1 = nchoosek(1:l2, l1);
+
+for i = 1:size(l1,1)
+    
+    % Square sub-matrix of A.
+    matrix = A(:,l1(i,:));
+    
+    if(det(matrix) ~= 0)
+        % Solve the system.
+        x = zeros(l2, 1);
+        x(l1(i,:),1) = linsolve(matrix, b);
+        
+        % If X >= 0, then X is a vertex.
+        if(sum(x >= 0) == length(x))
             
-            % Solve the system
-            x([i,j,k], 1) = inv(matrix) * b;
-           
-            % If X >= 0, then X is a vertex.
-            if(sum(x >= 0) == length(x))
-               
-                % Write the vertex in the matrix.
-                verts = [verts, x];
-               
-            end       
+            % Write the vertex in the matrix.
+            verts = [verts, x];
+            
         end
     end
 end
 
+       
