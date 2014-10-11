@@ -1,13 +1,16 @@
 
 % ************* SIMPLEX ********************************************
-function [x, f, It] = LP_Simplex(c,A,b)
+function [x, f, It] = Aux_Simplex(c,A,b)
 
 % ************* PASO 1 *********************************************
 
 % Buscamos un vértice inicial en F y tomamos B la submatriz de A con 
 % columas correspondientes a los valores del vértice distintos de 0
-[A, x] = LP_InitVert(A,b);
-I1 = x>0;
+[m,n] = size(A);
+n = n - m;
+x = zeros(n+m,1);
+x((n+1):(n+m)) = b;
+I1 = (n+1):(n+m);
 B = A(:,I1);
 aux = zeros(1,length(x));
 aux(I1) = 1;
@@ -27,7 +30,7 @@ Cj = c(I2) -  A(:,I2)' * PI;
 
 % ************* PASO 3 *********************************************
 
-if(sum(Cj >= 0) == length(Cj))
+if(norm(x((n+1):(n+m))) == 0)
     disp('La solución es:')
     disp(x)
     disp(' El valor de la función objetivo en x es:')
@@ -74,7 +77,7 @@ aux = zeros(1,length(x));
 aux(I1) = 1;
 I2 = 1:length(x);
 I2 = I2(aux == 0);
-It = It + 1 %%%%%%%
+It = It + 1; %%%%%%%
 
 end
 

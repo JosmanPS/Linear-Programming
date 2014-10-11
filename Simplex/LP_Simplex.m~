@@ -6,7 +6,7 @@ function [x, f, It] = LP_Simplex(c,A,b)
 
 % Buscamos un vértice inicial en F y tomamos B la submatriz de A con 
 % columas correspondientes a los valores del vértice distintos de 0
-[A, x] = LP_InitVert(A,b);
+[A,b,x] = LP_InitVert(A,b);
 I1 = x>0;
 B = A(:,I1);
 aux = zeros(1,length(x));
@@ -19,7 +19,7 @@ while 1
 % ************* PASO 2 *********************************************
 
 % Resolvemos el sistema lineal B' * PI = C_B
-PI = FactLU(B', c(I1,1));
+PI = linsolve(B', c(I1,1));
 
 % Calculamos los costos reducidos
 Cj = c(I2) -  A(:,I2)' * PI;
@@ -45,7 +45,7 @@ jopt = jopt(1);
 
 
 % ************* PASO 5 *********************************************
-z = FactLU(B,A(:,jopt));
+z = linsolve(B,A(:,jopt));
 if(sum(z <= 0) == length(z))
     disp('La función objetivo no está acotada inferiormente en F');
     return
