@@ -1,4 +1,6 @@
 function [A, v] = LP_InitVert(A,b)
+A = full(A);
+b = full(b);
 
 % Cambiamos los valores negativos
 negs = b < 0;
@@ -12,3 +14,6 @@ B = [A eye(m)];
 
 % Resolvemos el problema
 v = Aux_Simplex(c,B,b);
+v((n+1):(n+m)) = [];
+
+

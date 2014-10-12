@@ -9,9 +9,10 @@ function [x, f, It] = Aux_Simplex(c,A,b)
 [m,n] = size(A);
 n = n - m;
 x = zeros(n+m,1);
+% Vértice inicial
 x((n+1):(n+m)) = b;
 I1 = (n+1):(n+m);
-B = A(:,I1);
+B = A(:,I1)
 aux = zeros(1,length(x));
 aux(I1) = 1;
 I2 = 1:length(x);
@@ -22,7 +23,7 @@ while 1
 % ************* PASO 2 *********************************************
 
 % Resolvemos el sistema lineal B' * PI = C_B
-PI = FactLU(B', c(I1,1));
+PI = linsolve(B',c(I1,1));
 
 % Calculamos los costos reducidos
 Cj = c(I2) -  A(:,I2)' * PI;
@@ -30,14 +31,7 @@ Cj = c(I2) -  A(:,I2)' * PI;
 
 % ************* PASO 3 *********************************************
 
-if(norm(x((n+1):(n+m))) == 0)
-    disp('La solución es:')
-    disp(x)
-    disp(' El valor de la función objetivo en x es:')
-    f = c' * x;
-    disp(f)
-    disp('El número de iteraciones fue:')
-    disp(It)
+if(sum(Cj >= 0) == length(Cj))
     return
 end
 
@@ -48,7 +42,7 @@ jopt = jopt(1);
 
 
 % ************* PASO 5 *********************************************
-z = FactLU(B,A(:,jopt));
+z = linsolve(B, A(:,jopt));
 if(sum(z <= 0) == length(z))
     disp('La función objetivo no está acotada inferiormente en F');
     return
@@ -57,10 +51,11 @@ end
 
 % ************* PASO 6 *********************************************
 Xj = x(I1) ./ z;
-[Xjp, p] = min(Xj(Xj > 0));
+[Xjp, p] = min(Xj(z > 0));
 aux = 1:length(Xj);
 jp = aux(Xjp == Xj);
 jp = I1(jp);
+jp = jp(1);
 Xjp = Xjp(1);
 
 % ************* PASO 7 *********************************************
@@ -68,7 +63,7 @@ Xjp = Xjp(1);
 % Actualizamos
 theta = Xjp;
 x(jopt) = theta;
-x(I1) = x(I1) - theta * z; 
+x(I1) = x(I1) - theta * z;
 I1 = I1(I1 ~= jp);
 I1 = [I1, jopt];
 I1 = sort(I1);
@@ -77,7 +72,7 @@ aux = zeros(1,length(x));
 aux(I1) = 1;
 I2 = 1:length(x);
 I2 = I2(aux == 0);
-It = It + 1; %%%%%%%
+It = It + 1 %%%%%%%
 
 end
 

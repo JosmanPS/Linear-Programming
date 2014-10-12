@@ -40,7 +40,6 @@ for i = 1:size(l1,1)
             % Write the vertex in the matrix.
             verts = [verts, x];
             I = l1(i,:);
-            return
         end
     end
 end
