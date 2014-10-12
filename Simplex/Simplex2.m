@@ -1,16 +1,20 @@
+function x = Simplex2(c,A,b)
 
-% ************* SIMPLEX ********************************************
-function [x, f, It] = Aux_Simplex(c,A,b)
+c = full(c);
+A = full(A);
+b = full(b);
+
+[m,n] = size(A);
+
+% Agregamos variables de holgura y el vértice inicial 
+c = [-c; zeros(m,1)];
+A = [-A, eye(m)];
+x = [zeros(n,1); b];
 
 % ************* PASO 1 *********************************************
 
 % Buscamos un vértice inicial en F y tomamos B la submatriz de A con 
 % columas correspondientes a los valores del vértice distintos de 0
-[m,n] = size(A);
-n = n - m;
-x = zeros(n+m,1);
-% Vértice inicial
-x((n+1):(n+m)) = b;
 I1 = (n+1):(n+m);
 B = A(:,I1);
 aux = zeros(1,length(x));
@@ -26,12 +30,19 @@ while 1
 PI = linsolve(B',c(I1,1));
 
 % Calculamos los costos reducidos
-Cj = c(I2) -  A(:,I2)' * PI
+Cj = c(I2) -  A(:,I2)' * PI;
 
 
 % ************* PASO 3 *********************************************
 
 if(sum(Cj >= 0) == length(Cj))
+    disp('La solución es:')
+    disp(x)
+    disp(' El valor de la función objetivo en x es:')
+    f = c' * x;
+    disp(f)
+    disp('El número de iteraciones fue:')
+    disp(It)
     return
 end
 
@@ -63,7 +74,7 @@ Xjp = Xjp(1);
 % Actualizamos
 theta = Xjp;
 x(jopt) = theta;
-x(I1) = x(I1) - theta * z;
+x(I1) = x(I1) - theta * z
 I1 = I1(I1 ~= jp);
 I1 = [I1, jopt];
 I1 = sort(I1);
