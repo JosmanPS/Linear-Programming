@@ -32,7 +32,7 @@ Cj = c(I2) -  A(:,I2)' * PI;
 
 % ************* PASO 3 *********************************************
 
-if(sum(Cj >= 0) == length(Cj))
+if(norm(x((m+1):(m+n)) == 0)
     disp('La solución es:')
     disp(x)
     disp(' El valor de la función objetivo en x es:')
